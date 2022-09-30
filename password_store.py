@@ -41,7 +41,7 @@ def password_decrypt(token: bytes, password: str) -> bytes:
 
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         print('Invalid arguments. Please specify correct args.')
         sys.exit()
 
@@ -74,24 +74,24 @@ def main():
 
     input_key = args.key
 
-    if len(str(args.key)) < 12 :
+    if len(str(input_key)) < 12 :
         print('Please enter longer key value')
         sys.exit()
     
     input_id = args.keyid
     
-
     print(input_path)
     #file_name=input_path.split('/')[-1]
 
     with open(input_path) as f:
         contents = f.readlines()
         for pass_elements in contents:
-            print(pass_elements.split('=')[1])
+            message = pass_elements.split('=')[1]
+            password = input_key
+            storage_id = str(input_id) + "_" + pass_elements.split('=')[0][0]
+            password= password_encrypt(message.encode(), password)
+            os.system("security add-generic-password -a {} -w {}  -s {}".format(storage_id, password.decode("utf-8"), "python_app"))
 
-    message = 'John Doe'
-    password = 'mypass'
-    password_encrypt(message.encode(), password)
     #token = '1'
     #password_decrypt(token, password).decode()
 
